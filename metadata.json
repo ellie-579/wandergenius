@@ -1,0 +1,7 @@
+{
+  "name": "WanderGenius Travel Planner",
+  "description": "An AI-powered travel assistant that creates detailed itineraries, finds flights, and explores neighborhoods using Gemini.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
