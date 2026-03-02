@@ -1,0 +1,8 @@
+node_modules
+.next
+dist
+
+# Environment files — contain API keys, never commit these
+.env.local
+.env*.local
+
