@@ -28,8 +28,12 @@ const App: React.FC = () => {
     const [weatherData, setWeatherData] = useState<any>(null);
     const [tempUnit, setTempUnit] = useState<'C' | 'F'>('C');
     const [savedTrips, setSavedTrips] = useState<TripPlan[]>([]);
+    const [showAllFlights, setShowAllFlights] = useState(false);
+    const [showAllHotels, setShowAllHotels] = useState(false);
 
     const resultsRef = useRef<HTMLDivElement>(null);
+    const flightsRef = useRef<HTMLDivElement>(null);
+    const hotelsRef = useRef<HTMLDivElement>(null);
     const mapRef = useRef<any | null>(null);
 
     useEffect(() => {
@@ -53,6 +57,8 @@ const App: React.FC = () => {
         setIsPlanning(true);
         setResults(null);
         setWeatherData(null);
+        setShowAllFlights(false);
+        setShowAllHotels(false);
         setPlanningStep('Syncing Intelligence...');
 
         try {
@@ -183,9 +189,9 @@ const App: React.FC = () => {
                         <h1 className="text-2xl font-black tracking-tighter text-slate-900 leading-none">WanderGenius</h1>
                     </div>
                     <div className="hidden md:flex items-center space-x-8 text-sm font-bold text-slate-500">
-                        <button className="hover:text-blue-600 transition-colors">Flights</button>
-                        <button className="hover:text-blue-600 transition-colors">Hotels</button>
-                        <button className="px-6 py-2.5 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-black transition-all">My Account</button>
+                        <button onClick={() => flightsRef.current?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-blue-600 transition-colors">Flights</button>
+                        <button onClick={() => hotelsRef.current?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-blue-600 transition-colors">Hotels</button>
+                        <button onClick={() => alert('Account features coming soon! Save your trips using the Save button after planning.')} className="px-6 py-2.5 bg-slate-900 text-white rounded-xl shadow-lg hover:bg-black transition-all">My Account</button>
                     </div>
                 </div>
             </nav>
@@ -379,10 +385,10 @@ const App: React.FC = () => {
 
                                 {/* RIGHT: FLIGHTS & HOTELS */}
                                 <div className="lg:col-span-4 space-y-12">
-                                    <div className="bg-slate-950 rounded-[3rem] overflow-hidden shadow-2xl p-8 border-b-8 border-b-blue-600">
+                                    <div ref={flightsRef} className="bg-slate-950 rounded-[3rem] overflow-hidden shadow-2xl p-8 border-b-8 border-b-blue-600">
                                         <h3 className="text-white font-black text-xl flex items-center gap-3 mb-8"><Plane size={24} className="text-blue-500" /> Airfare Hub</h3>
-                                        <div className="space-y-4 mb-10 overflow-y-auto max-h-[400px] custom-scrollbar pr-2">
-                                            {results.flights?.map((flight: any, i: number) => (
+                                        <div className="space-y-4 mb-6 overflow-y-auto max-h-[400px] custom-scrollbar pr-2">
+                                            {(showAllFlights ? results.flights : results.flights?.slice(0, 3))?.map((flight: any, i: number) => (
                                                 <div key={i} className="bg-white/5 p-5 rounded-[1.5rem] border border-white/5 hover:border-blue-500/40 transition-all">
                                                     <div className="flex justify-between items-center mb-3">
                                                         <span className="text-blue-400 font-black text-[10px] uppercase truncate max-w-[120px]">{flight.airline}</span>
@@ -402,21 +408,27 @@ const App: React.FC = () => {
                                                 </div>
                                             ))}
                                         </div>
+                                        {results.flights?.length > 3 && (
+                                            <button
+                                                onClick={() => setShowAllFlights(p => !p)}
+                                                className="w-full mb-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider border border-white/10 text-slate-400 hover:text-white hover:border-blue-500/50 transition-all"
+                                            >
+                                                {showAllFlights ? `▲ Show Less` : `▼ Show All ${results.flights.length} Flights`}
+                                            </button>
+                                        )}
                                         <div className="grid grid-cols-2 gap-3">
                                             <button onClick={() => openExternalSearch('google')} className="py-3.5 bg-white text-slate-900 rounded-xl text-[9px] font-black shadow-lg transition-transform active:scale-95">✈️ Google Flights</button>
                                             <button onClick={() => openExternalSearch('kayak')} className="py-3.5 bg-[#334155] text-white rounded-xl text-[9px] font-black shadow-lg transition-transform active:scale-95">🚢 Kayak</button>
                                         </div>
                                     </div>
 
-                                    <div className="bg-white rounded-[3.5rem] border border-slate-200 overflow-hidden shadow-2xl p-10">
+                                    <div ref={hotelsRef} className="bg-white rounded-[3.5rem] border border-slate-200 overflow-hidden shadow-2xl p-10">
                                         <h3 className="text-3xl font-black text-slate-900 flex items-center gap-5 mb-10"><Hotel size={32} className="text-blue-600" /> Stays</h3>
                                         <div className="space-y-8">
-                                            {results.accommodations?.map((hotel: any, i: number) => {
+                                            {(showAllHotels ? results.accommodations : results.accommodations?.slice(0, 3))?.map((hotel: any, i: number) => {
                                                 const checkIn = dates.start;
                                                 const checkOut = dates.end;
-                                                const bookingUrl = hotel.mapUrl?.includes('google.com')
-                                                    ? `${hotel.mapUrl}&checkin=${checkIn}&checkout=${checkOut}`
-                                                    : `https://www.google.com/search?q=${encodeURIComponent(hotel.name + ' ' + destination + ' hotel booking')}&checkin=${checkIn}&checkout=${checkOut}`;
+                                                const bookingUrl = `https://www.google.com/search?q=${encodeURIComponent(hotel.name + ' ' + destination + ' hotel book')}&checkin=${checkIn}&checkout=${checkOut}`;
 
                                                 const drawingUrl = `https://api.dicebear.com/9.x/glass/svg?seed=${encodeURIComponent(hotel.name)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
 
@@ -453,6 +465,14 @@ const App: React.FC = () => {
                                                 );
                                             })}
                                         </div>
+                                        {results.accommodations?.length > 3 && (
+                                            <button
+                                                onClick={() => setShowAllHotels(p => !p)}
+                                                className="mt-6 w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-wider border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-300 transition-all"
+                                            >
+                                                {showAllHotels ? `▲ Show Less` : `▼ Show All ${results.accommodations.length} Hotels`}
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>

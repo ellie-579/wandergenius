@@ -58,7 +58,7 @@ Return ONLY valid JSON (no markdown):
   "climatology": {"avgHigh": number, "avgLow": number, "generalAdvice": string},
   "feasibility": string
 }
-Include exactly 3 flights and 3 accommodations. Use realistic typical values.`),
+Include exactly 6 flights covering different airlines, price points, and stop counts. Include exactly 5 accommodations at different price points within budget. Use realistic typical values.`),
 
         // Call 2: Neighborhoods + Attractions + Route
         callGemini(apiKey, `${context}

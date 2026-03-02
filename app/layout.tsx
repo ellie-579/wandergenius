@@ -15,7 +15,7 @@ export default function RootLayout({
         <html lang="en">
             <head>
                 {/* Tailwind CSS */}
-                <script src="https://cdn.tailwindcss.com" async></script>
+                <script src="https://cdn.tailwindcss.com"></script>
                 {/* Leaflet CSS */}
                 <link
                     rel="stylesheet"
