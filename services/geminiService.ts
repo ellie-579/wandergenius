@@ -71,15 +71,15 @@ export const generateText = async (prompt: string, model: string, tools: any[]) 
 export const getTravelIntelligence = async (trip: any) => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const model = 'gemini-3-flash-preview';
-  
+
   const prompt = `Act as a world-class travel intelligence engine. 
   Plan a trip from ${trip.origin || 'nearby'} to ${trip.destination} for ${trip.startDate} to ${trip.endDate}. 
   Budget: $${trip.budget.max}/night.
   
   MANDATORY REQUIREMENTS:
   1. USE TOOLS: You MUST use Google Search to find currently available prices and real locations.
-  2. FLIGHTS: Return EXACTLY 3 distinct, real flight options from various airlines (reduced from 5 for speed).
-  3. ACCOMMODATIONS: Find 3 REAL hotels. For each, provide a specific 'imageSearchTerm' (e.g., "The Ritz-Carlton Paris exterior architecture").
+  2. FLIGHTS: Return EXACTLY 6 distinct, real flight options from various airlines covering different price points and stop counts.
+  3. ACCOMMODATIONS: Find 5 REAL hotels at different price points within the budget. For each, provide a specific 'imageSearchTerm' (e.g., "The Ritz-Carlton Paris exterior architecture").
   4. ACCURACY: All data must be grounded in real-world facts for these specific dates.
   
   Response must be a single JSON block:
@@ -109,7 +109,7 @@ export const getTravelIntelligence = async (trip: any) => {
   const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
   if (groundingChunks && data.accommodations) {
     data.accommodations = data.accommodations.map((hotel: any) => {
-      const chunk = groundingChunks.find((c: any) => 
+      const chunk = groundingChunks.find((c: any) =>
         (c.web?.title?.toLowerCase().includes(hotel.name.toLowerCase()))
       );
       return {
