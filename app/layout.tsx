@@ -5,6 +5,10 @@ import "./globals.css";
 export const metadata: Metadata = {
     title: "WanderGenius | AI Travel Planner",
     description: "Plan your next trip with AI. Find the best flights, stays, and activities within your budget.",
+    icons: {
+        icon: "/favicon.png",
+        apple: "/favicon.png",
+    },
 };
 
 export default function RootLayout({
