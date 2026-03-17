@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { getTravelIntelligence, fetchWeather, geocodeCity } from '@/lib/geminiService';
 import { TripPlan, Neighborhood } from '@/lib/types';
+import CityAutocomplete from '@/components/CityAutocomplete';
 
 const App: React.FC = () => {
     // Form State
@@ -214,15 +215,28 @@ const App: React.FC = () => {
                                     <div className="px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-slate-100 transition-colors">
                                         <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest block mb-0.5">Origin</label>
                                         <div className="flex items-center gap-3">
-                                            <Plane size={18} className="text-slate-300" />
-                                            <input type="text" placeholder="Home City" value={origin} onChange={(e) => setOrigin(e.target.value)} className="bg-transparent w-full font-bold focus:outline-none text-base text-slate-900" />
+                                            <Plane size={18} className="text-slate-300 shrink-0" />
+                                            <CityAutocomplete
+                                                value={origin}
+                                                onChange={setOrigin}
+                                                placeholder="SFO, San Francisco, SF…"
+                                                className="w-full"
+                                                inputClassName="bg-transparent w-full font-bold focus:outline-none text-base text-slate-900"
+                                            />
                                         </div>
                                     </div>
                                     <div className="px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl hover:bg-slate-100 transition-colors">
                                         <label className="text-[9px] font-black uppercase text-slate-400 tracking-widest block mb-0.5">Destination</label>
                                         <div className="flex items-center gap-3">
-                                            <MapPin size={18} className="text-blue-600" />
-                                            <input type="text" placeholder="Goal City" value={destination} onChange={(e) => setDestination(e.target.value)} required className="bg-transparent w-full font-bold focus:outline-none text-base text-slate-900" />
+                                            <MapPin size={18} className="text-blue-600 shrink-0" />
+                                            <CityAutocomplete
+                                                value={destination}
+                                                onChange={setDestination}
+                                                placeholder="NYC, New York, JFK…"
+                                                required
+                                                className="w-full"
+                                                inputClassName="bg-transparent w-full font-bold focus:outline-none text-base text-slate-900"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -252,7 +266,14 @@ const App: React.FC = () => {
                                         <label className="text-[11px] font-black text-slate-900 uppercase tracking-widest">Multi-City stops</label>
                                     </div>
                                     <div className="flex gap-2">
-                                        <input type="text" placeholder="Add extra stop..." value={newCity} onChange={(e) => setNewCity(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCity())} className="flex-1 bg-white border border-slate-200 rounded-2xl px-6 py-3.5 text-sm font-bold shadow-sm outline-none focus:border-blue-500" />
+                                        <CityAutocomplete
+                                            value={newCity}
+                                            onChange={setNewCity}
+                                            placeholder="Add stop: LAX, London, CDG…"
+                                            className="flex-1"
+                                            inputClassName="w-full bg-white border border-slate-200 rounded-2xl px-6 py-3.5 text-sm font-bold shadow-sm outline-none focus:border-blue-500"
+                                            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCity())}
+                                        />
                                         <button onClick={(e) => (e.preventDefault(), handleAddCity())} type="button" className="p-4 bg-blue-600 text-white rounded-2xl transition-all shadow-md active:scale-95"><Plus size={24} /></button>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
