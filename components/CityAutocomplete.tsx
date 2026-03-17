@@ -6,7 +6,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 // Format: "City, Country" — large enough for solid coverage, small enough for
 // instant client-side filtering.
 const CITIES: string[] = [
-    // North America
+    // ── United States: Major metros ───────────────────────────────────────────
     'New York, USA', 'Los Angeles, USA', 'Chicago, USA', 'Houston, USA',
     'Phoenix, USA', 'Philadelphia, USA', 'San Antonio, USA', 'San Diego, USA',
     'Dallas, USA', 'San Jose, USA', 'Austin, USA', 'Jacksonville, USA',
@@ -20,11 +20,106 @@ const CITIES: string[] = [
     'Tampa, USA', 'New Orleans, USA', 'Arlington, USA', 'Wichita, USA',
     'Miami, USA', 'Orlando, USA', 'Pittsburgh, USA', 'Cincinnati, USA',
     'Detroit, USA', 'Salt Lake City, USA', 'Honolulu, USA', 'Anchorage, USA',
+    'St. Louis, USA', 'Richmond, USA', 'Baton Rouge, USA', 'Lexington, USA',
+    'Stockton, USA', 'Corpus Christi, USA', 'St. Paul, USA', 'Riverside, USA',
+    'Bakersfield, USA', 'Aurora, USA', 'Buffalo, USA', 'Fort Wayne, USA',
+    'Chandler, USA', 'Scottsdale, USA', 'Tempe, USA', 'Gilbert, USA',
+    'Henderson, USA', 'North Las Vegas, USA',
+
+    // ── Bay Area ──────────────────────────────────────────────────────────────
+    'Oakland, USA', 'Berkeley, USA', 'Fremont, USA', 'San Mateo, USA',
+    'Palo Alto, USA', 'Sunnyvale, USA', 'Santa Clara, USA', 'Mountain View, USA',
+    'Redwood City, USA', 'Hayward, USA', 'Concord, USA', 'Vallejo, USA',
+    'Richmond, California, USA', 'Daly City, USA', 'South San Francisco, USA',
+    'San Rafael, USA', 'Novato, USA', 'Walnut Creek, USA', 'Pleasanton, USA',
+    'Livermore, USA', 'Union City, USA', 'Napa, USA', 'Petaluma, USA',
+    'Santa Rosa, USA', 'San Leandro, USA', 'Alameda, USA', 'Marin County, USA',
+
+    // ── Southern California ───────────────────────────────────────────────────
+    'Irvine, USA', 'Pasadena, USA', 'Burbank, USA', 'Glendale, USA',
+    'Santa Ana, USA', 'Anaheim, USA', 'Santa Monica, USA', 'Beverly Hills, USA',
+    'Torrance, USA', 'Orange, USA', 'Fullerton, USA', 'Garden Grove, USA',
+    'Pomona, USA', 'Rancho Cucamonga, USA', 'Ontario, USA', 'Fontana, USA',
+    'Moreno Valley, USA', 'Oxnard, USA', 'Santa Barbara, USA', 'Ventura, USA',
+    'San Bernardino, USA', 'Chula Vista, USA', 'Escondido, USA',
+    'El Monte, USA', 'West Covina, USA', 'Norwalk, USA', 'Compton, USA',
+    'Inglewood, USA', 'Thousand Oaks, USA', 'Simi Valley, USA', 'Lancaster, USA',
+    'Palmdale, USA', 'Santa Clarita, USA', 'Murrieta, USA', 'Temecula, USA',
+
+    // ── Pacific Northwest ─────────────────────────────────────────────────────
+    'Tacoma, USA', 'Bellevue, USA', 'Spokane, USA', 'Vancouver, Washington, USA',
+    'Kirkland, USA', 'Redmond, USA', 'Renton, USA', 'Eugene, USA',
+    'Salem, Oregon, USA', 'Boise, USA',
+
+    // ── Mountain West ─────────────────────────────────────────────────────────
+    'Boulder, USA', 'Fort Collins, USA', 'Pueblo, USA', 'Provo, USA',
+    'Ogden, USA', 'Flagstaff, USA', 'Reno, USA', 'Sparks, USA',
+    'Missoula, USA', 'Billings, USA', 'Casper, USA', 'Cheyenne, USA',
+    'Santa Fe, USA', 'Las Cruces, USA',
+
+    // ── Midwest ───────────────────────────────────────────────────────────────
+    'Minneapolis, USA', 'St. Paul, USA', 'Madison, USA', 'Green Bay, USA',
+    'Rockford, USA', 'Grand Rapids, USA', 'Lansing, USA', 'Ann Arbor, USA',
+    'Flint, USA', 'Toledo, USA', 'Akron, USA', 'Cleveland, USA',
+    'Columbus, Ohio, USA', 'Dayton, USA', 'Springfield, Illinois, USA',
+    'Peoria, USA', 'Des Moines, USA', 'Iowa City, USA', 'Sioux Falls, USA',
+    'Fargo, USA', 'Lincoln, Nebraska, USA', 'Topeka, USA', 'Wichita, USA',
+    'St. Joseph, Missouri, USA', 'Springfield, Missouri, USA',
+
+    // ── South / Southeast ─────────────────────────────────────────────────────
+    'Memphis, USA', 'Knoxville, USA', 'Chattanooga, USA', 'Murfreesboro, USA',
+    'Jackson, Mississippi, USA', 'Birmingham, Alabama, USA', 'Montgomery, USA',
+    'Mobile, USA', 'Huntsville, USA', 'Tuscaloosa, USA',
+    'Savannah, USA', 'Augusta, Georgia, USA', 'Columbus, Georgia, USA',
+    'Macon, USA', 'Athens, Georgia, USA',
+    'Greensboro, USA', 'Durham, USA', 'Winston-Salem, USA', 'Fayetteville, USA',
+    'Asheville, USA', 'Greenville, South Carolina, USA', 'Columbia, South Carolina, USA',
+    'Charleston, South Carolina, USA',
+    'Columbia, USA', 'Chesapeake, USA', 'Norfolk, USA', 'Newport News, USA',
+    'Hampton, USA', 'Alexandria, Virginia, USA',
+    'Fort Lauderdale, USA', 'Hialeah, USA', 'Hollywood, Florida, USA',
+    'Jacksonville, Florida, USA', 'Tallahassee, USA', 'Gainesville, Florida, USA',
+    'Cape Coral, USA', 'Fort Myers, USA', 'Sarasota, USA', 'Daytona Beach, USA',
+    'Clearwater, USA', 'St. Petersburg, Florida, USA',
+    'Shreveport, USA', 'Lafayette, Louisiana, USA', 'Lake Charles, USA',
+    'Little Rock, USA', 'Fayetteville, Arkansas, USA',
+    'El Paso, USA', 'Lubbock, USA', 'Laredo, USA', 'Garland, USA',
+    'Irving, USA', 'Plano, USA', 'Frisco, USA', 'McKinney, USA',
+    'San Marcos, USA', 'Round Rock, USA', 'Killeen, USA', 'Waco, USA',
+    'Midland, USA', 'Odessa, USA', 'Abilene, USA', 'Beaumont, USA',
+    'Amarillo, USA', 'Brownsville, USA', 'McAllen, USA',
+
+    // ── Northeast ─────────────────────────────────────────────────────────────
+    'Providence, USA', 'Hartford, USA', 'New Haven, USA', 'Bridgeport, USA',
+    'Stamford, USA', 'Waterbury, USA', 'Worcester, USA', 'Springfield, Massachusetts, USA',
+    'Lowell, USA', 'Cambridge, Massachusetts, USA',
+    'Newark, USA', 'Jersey City, USA', 'Paterson, USA',
+    'Yonkers, USA', 'Buffalo, USA', 'Rochester, New York, USA', 'Syracuse, USA',
+    'Albany, USA', 'Scranton, USA', 'Erie, Pennsylvania, USA',
+    'Manchester, New Hampshire, USA',
+    'Burlington, Vermont, USA', 'Portland, Maine, USA',
+
+    // ── Hawaii / Alaska ───────────────────────────────────────────────────────
+    'Kauai, USA', 'Maui, USA', 'Hilo, USA', 'Kona, USA',
+    'Fairbanks, USA', 'Juneau, USA',
+
+    // ── Canada ────────────────────────────────────────────────────────────────
     'Toronto, Canada', 'Montreal, Canada', 'Vancouver, Canada', 'Calgary, Canada',
     'Edmonton, Canada', 'Ottawa, Canada', 'Winnipeg, Canada', 'Quebec City, Canada',
-    'Hamilton, Canada', 'Halifax, Canada',
+    'Hamilton, Canada', 'Halifax, Canada', 'Saskatoon, Canada', 'Regina, Canada',
+    'Victoria, Canada', 'Kelowna, Canada', 'Abbotsford, Canada',
+    'London, Ontario, Canada', 'Kitchener, Canada', 'Windsor, Canada',
+    'St. John\'s, Canada', 'Moncton, Canada', 'Fredericton, Canada',
+    'Thunder Bay, Canada', 'Sudbury, Canada',
+
+    // ── Mexico ────────────────────────────────────────────────────────────────
     'Mexico City, Mexico', 'Guadalajara, Mexico', 'Monterrey, Mexico',
     'Cancún, Mexico', 'Tijuana, Mexico', 'Puebla, Mexico',
+    'León, Mexico', 'Juárez, Mexico', 'Mérida, Mexico', 'San Luis Potosí, Mexico',
+    'Querétaro, Mexico', 'Mexicali, Mexico', 'Culiacán, Mexico', 'Acapulco, Mexico',
+    'Aguascalientes, Mexico', 'Hermosillo, Mexico', 'Saltillo, Mexico',
+    'Morelia, Mexico', 'Veracruz, Mexico', 'Oaxaca, Mexico', 'Los Cabos, Mexico',
+    'Puerto Vallarta, Mexico', 'Playa del Carmen, Mexico', 'Tulum, Mexico',
 
     // South America
     'São Paulo, Brazil', 'Rio de Janeiro, Brazil', 'Brasília, Brazil',
@@ -190,6 +285,7 @@ const CITIES: string[] = [
 const ALIASES: Record<string, string> = {
     // USA
     sfo: 'San Francisco, USA', sf: 'San Francisco, USA', 'san fran': 'San Francisco, USA',
+    oak: 'Oakland, USA',
     lax: 'Los Angeles, USA', la: 'Los Angeles, USA',
     jfk: 'New York, USA', lga: 'New York, USA', ewr: 'New York, USA',
     nyc: 'New York, USA', ny: 'New York, USA', 'new york city': 'New York, USA',
